@@ -1,10 +1,3 @@
-/* const containerIcon = document.querySelector('.container-icon');
-const containerCart = document.querySelector('.container-cart-products');
-
-containerIcon.addEventListener('click', () => {
-    containerCart.classList.toggle('hidden-cart');
-}) */
-
 // variables
 const carrito = document.querySelector('#carrito');
 const listaCard = document.querySelector('#lista-card');
@@ -45,8 +38,12 @@ function eliminarArticulo(e) {
         const articuloId = e.target.getAttribute('data-id');
 
         // elimina del arreglo de articulos carrito
-        articulosCarrito = articulosCarrito.filter( articulo => articulo.id !== articuloId)
-
+        const articuloEncontrado = articulosCarrito.find(articulo => articulo.id === articuloId);
+        if (articuloEncontrado.cantidad > 1) {
+            articuloEncontrado.cantidad--; // Si hay más de un artículo, disminuye la cantidad
+        } else {
+            articulosCarrito = articulosCarrito.filter(articulo => articulo.id !== articuloId); // Si hay solo uno, elimina el artículo
+        }
         carritoHTML(); // iterar sobre el carrito y mostrar su HTML
     }
 }
@@ -113,10 +110,14 @@ function carritoHTML() { // esta funcion se va a encargar de generar el html bas
     // limpiamos el html
     limpiarHTML(); // primero limpiamos el html previo
 
-
+    let precioTotal = 0; // Variable para almacenar el precio total
     // recorre el carrito y genera el HTML
     articulosCarrito.forEach(articulo => {
         const { imagen, nombre, precio, cantidad, id } = articulo;
+        // Calcular el precio total por artículo
+        const precioUnidad = parseFloat(precio.slice(2)); // Eliminar el símbolo de "$ " y convertir a número
+        const precioPorArticulo = precioUnidad * cantidad;
+        precioTotal += precioPorArticulo; // Sumar al precio total
         // todos los articulos se van a ir insertando en el <tbody>
         const row = document.createElement('tr'); // creamos el tr
         // y adentro de ese tr vamos a armar nuestro html
@@ -136,6 +137,10 @@ function carritoHTML() { // esta funcion se va a encargar de generar el html bas
         // vamos a ir agregando cada row en cada iteracion
         contenedorCarrito.appendChild(row);
     });
+
+    // Mostrar el precio total en el HTML
+    const totalHTML = document.querySelector('#total');
+    totalHTML.textContent = `Total: $${precioTotal.toFixed(3)}`; // Mostrar el precio total con dos decimales
 
     // agregar al carrito de compras al storage
     sincronizarStorage();
