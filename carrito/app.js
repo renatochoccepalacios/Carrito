@@ -98,13 +98,13 @@ function leerDatosCard(card) {
         // tomamos una compia ...
         articulosCarrito = [...articulosCarrito, infoCard] // obtenemos una copia y le vamos ir agregando el objeto infoCard
     }
-    console.log(existe)
+    // console.log(existe)
 
 
 
 
     carritoHTML();
-    console.log(articulosCarrito)
+    // console.log(articulosCarrito);
 }
 
 function carritoHTML() { // esta funcion se va a encargar de generar el html basado en articulosCarrito
