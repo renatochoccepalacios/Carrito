@@ -4,6 +4,7 @@ const listaCard = document.querySelector('#lista-card');
 const contenedorCarrito = document.querySelector('#lista-carrito tbody');
 const vaciarCarritoBtn = document.querySelector('#vaciar-carrito');
 let articulosCarrito = [];
+const totalHTML = document.querySelector('#total');
 
 cargarEventListeners();
 // funcion para registrar todos los eventlisteners
@@ -114,10 +115,6 @@ function carritoHTML() { // esta funcion se va a encargar de generar el html bas
     // recorre el carrito y genera el HTML
     articulosCarrito.forEach(articulo => {
         const { imagen, nombre, precio, cantidad, id } = articulo;
-        // Calcular el precio total por artículo
-        const precioUnidad = parseFloat(precio.slice(2)); // Eliminar el símbolo de "$ " y convertir a número
-        const precioPorArticulo = precioUnidad * cantidad;
-        precioTotal += precioPorArticulo; // Sumar al precio total
         // todos los articulos se van a ir insertando en el <tbody>
         const row = document.createElement('tr'); // creamos el tr
         // y adentro de ese tr vamos a armar nuestro html
@@ -138,9 +135,7 @@ function carritoHTML() { // esta funcion se va a encargar de generar el html bas
         contenedorCarrito.appendChild(row);
     });
 
-    // Mostrar el precio total en el HTML
-    const totalHTML = document.querySelector('#total');
-    totalHTML.textContent = `Total: $${precioTotal.toFixed(3)}`; // Mostrar el precio total con dos decimales
+    calcularPrecioTotal(); // llamamos a la funcion calcular precio total
 
     // agregar al carrito de compras al storage
     sincronizarStorage();
@@ -158,4 +153,21 @@ function limpiarHTML() {
     while (contenedorCarrito.firstChild) {
         contenedorCarrito.removeChild(contenedorCarrito.firstChild);
     }
+    // despues de limpiar el html del carrito actualiza el precio total
+    calcularPrecioTotal();
+}
+
+function calcularPrecioTotal() {
+    let precioTotal = 0; // variable para almacenar el precio total
+
+    // iterar a travez de cada articulo
+    articulosCarrito.forEach(articulo => {
+
+         // Extraer el precio unitario del artículo y convertirlo a un número decimal
+        const precioUnidad = parseFloat(articulo.precio.slice(2)); // Eliminar el símbolo de "$ " y convertir a número
+        // calcular el costo total del articulo
+        precioTotal += precioUnidad * articulo.cantidad;
+    });
+
+    totalHTML.textContent = `Total: $${precioTotal.toFixed(3)}`;
 }
